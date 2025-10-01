@@ -51,3 +51,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     run_inference(args.weights, args.source, args.out, args.conf, display=not args.no_display)
+

@@ -27,3 +27,4 @@ if __name__ == "__main__":
     parser.add_argument('--save_dir', default='runs/train/exp', help='where to save results')
     args = parser.parse_args()
     main(args.data, args.model, args.epochs, args.imgsz, args.batch, args.save_dir)
+
