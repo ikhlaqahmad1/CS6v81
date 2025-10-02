@@ -1,0 +1,8 @@
+train: dataset_split/train/images
+val: dataset_split/val/images
+test: dataset_split/test/images
+
+names: 
+  0: bandaid
+  1: conforming guaze
+  2: syringe
