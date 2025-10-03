@@ -44,7 +44,7 @@ def run_inference(weights, source, out_dir="results", conf=0.35, display=True):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--weights", default="yolov8n.pt", help="Path to trained model")
-    parser.add_argument("--source", default="test/images", help="Folder with images to test")
+    parser.add_argument("--source", default="dataset_split/test/images", help="Folder with images to test")
     parser.add_argument("--out", default="results", help="Folder to save annotated results")
     parser.add_argument("--conf", type=float, default=0.35, help="Confidence threshold")
     parser.add_argument("--no_display", action="store_true", help="Disable display window")

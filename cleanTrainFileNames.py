@@ -1,7 +1,8 @@
 import os
 import re
 
-folders = ["train/images", "train/labels"]
+folders = ["train/images",
+           "train/labels"]
 
 for folder in folders:
     for filename in os.listdir(folder):

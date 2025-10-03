@@ -103,4 +103,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: botsort.yaml
-save_dir: /Users/chinmayi/Desktop/HBS Lab/CS6v81/runs/train/exp
+save_dir: /Users/ikhlaqahmad/Desktop/Fall 2025/CS-6381-Robot/Robot-Code/CS6V81/runs/train/exp
