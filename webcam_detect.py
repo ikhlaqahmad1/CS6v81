@@ -19,34 +19,44 @@ def run_webcam(weights, camera_index=0, conf=0.35):
         if not ret:
             break
 
-        # Run detection
+        # Run YOLO detection
         results = model(frame, conf=conf)[0]
 
-        # Annotated frame (boxes + labels drawn automatically)
+        # Draw boxes and labels automatically
         annotated = results.plot()
 
-        # Show detections
-        cv2.imshow("YOLO Webcam Detection", annotated)
-
-        # Print detections to terminal
-        # Print detections to terminal
+        # Loop through detections
         if results.boxes is not None and len(results.boxes) > 0:
             for box in results.boxes:
                 cls = int(box.cls[0].cpu().numpy())
                 conf_val = float(box.conf[0].cpu().numpy())
                 xyxy = box.xyxy[0].cpu().numpy()
-                print(f"class:{results.names[cls]}, conf:{conf_val:.2f}, box:{xyxy}")
+
+                # Get box coordinates
+                x1, y1, x2, y2 = xyxy
+                cx = (x1 + x2) / 2
+                cy = (y1 + y2) / 2
+
+                # Print detection info
+                print(f"class: {results.names[cls]}, conf: {conf_val:.2f}, box: {xyxy}, center: ({cx:.1f}, {cy:.1f})")
+
+                # Draw center point
+                cv2.circle(annotated, (int(cx), int(cy)), 5, (0, 0, 255), -1)
+
         else:
             print("No detections")
 
-        # Exit on 'q'
+        # Show the frame
+        cv2.imshow("YOLO Webcam Detection", annotated)
+
+        # Press 'q' to quit
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
     cap.release()
     cv2.destroyAllWindows()
 
-# Change the default value for the webcam 0, 1, 2 etc.
+# Run
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--weights", default="runs/train/exp/weights/best.pt", help="Path to trained model")
