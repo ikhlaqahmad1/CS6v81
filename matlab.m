@@ -1,11 +1,12 @@
 %% -----------------------------
-% MATLAB Real-Time YOLO Tracking & Arduino Control
+% MATLAB Real-Time YOLO Coordinate Reader
+% Reads coordinates from Python YOLO and visualizes them
 %% -----------------------------
 
-% Serial port settings
-arduinoPort = "/dev/tty.usbmodem14101"; % Replace with your port
+% Serial port settings (Python must send via serial)
+pythonPort = "/dev/tty.usbmodem14101"; % Replace with your port
 baudRate = 9600;
-s = serialport(arduinoPort, baudRate);
+s = serialport(pythonPort, baudRate);
 configureTerminator(s, "LF");
 flush(s);
 
@@ -14,46 +15,32 @@ disp('🔵 Listening for coordinates from Python YOLO...');
 % Camera settings (match your webcam resolution)
 imgWidth = 640;
 imgHeight = 480;
-centerX = imgWidth / 2;
-centerY = imgHeight / 2;
 
-% Control parameters
-Kp = 0.5;    % Proportional gain for speed control
-maxSpeed = 255; % Max motor speed (Arduino PWM)
+% Create a figure for visualization
+figure;
+hPlot = plot(nan, nan, 'ro', 'MarkerSize', 10, 'MarkerFaceColor', 'r');
+xlim([0 imgWidth]);
+ylim([0 imgHeight]);
+xlabel('X'); ylabel('Y');
+title('Object Tracking from Python YOLO');
+set(gca, 'YDir','reverse'); % Reverse Y-axis to match image coordinates
+grid on;
 
-% Main loop
 while true
     try
-        % Read a line from Python YOLO
-        data = readline(s);
+        % Read one line from Python
+        data = readline(s);         % e.g., "320,240"
         coords = strsplit(strtrim(data), ',');
 
         if numel(coords) == 2
-            % Parse coordinates
             cx = str2double(coords{1});
             cy = str2double(coords{2});
 
-            fprintf('Object at: X=%d, Y=%d\n', cx, cy);
+            fprintf('Received coordinates: X=%d, Y=%d\n', cx, cy);
 
-            % Compute error relative to center
-            errorX = cx - centerX;   % positive = object to the right
-            errorY = centerY - cy;   % positive = object is above center
-
-            % Simple proportional control
-            speedX = Kp * errorX;
-            speedY = Kp * errorY;
-
-            % Clamp speeds to [-maxSpeed, maxSpeed]
-            speedX = max(min(speedX, maxSpeed), -maxSpeed);
-            speedY = max(min(speedY, maxSpeed), -maxSpeed);
-
-            % Format command as "X,Y\n" for Arduino
-            cmd = sprintf('%d,%d\n', round(speedX), round(speedY));
-            write(s, cmd, 'string');
-
-            % Optional: read Arduino response
-            % resp = readline(s);
-            % fprintf('Arduino: %s\n', resp);
+            % Update plot
+            set(hPlot, 'XData', cx, 'YData', cy);
+            drawnow;
         end
     catch ME
         fprintf('⚠️ Error: %s\n', ME.message);
