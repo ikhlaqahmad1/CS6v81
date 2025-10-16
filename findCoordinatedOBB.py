@@ -20,7 +20,7 @@ def parse_args():
     p.add_argument('--weights', default='runs/train/exp/weights/best.pt', help='path to trained OBB weights')
     p.add_argument('--camera', type=int, default=0, help='webcam index (0 default)')
     p.add_argument('--serial_port', default=None, help='Serial port to Arduino (e.g. COM3 or /dev/ttyACM0)')
-    p.add_argument('--baud', type=int, default=115200)
+    p.add_argument('--baud', type=int, default=57600)
     p.add_argument('--show', action='store_true', help='Show visual output window')
     p.add_argument('--focal', type=float, default=800.0, help='Focal length in pixels (for distance estimation)')
     p.add_argument('--known_width', type=float, default=0.05, help='Known object width in meters (for distance estimation)')
